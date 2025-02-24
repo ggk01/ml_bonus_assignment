@@ -1,0 +1,13 @@
+📌 Final File Structure
+graph_env.py → Defines the environment.
+q_learning_agent.py → Implements the Q-learning agent.
+train_agent.py → Trains a single agent.
+multi_agent.py → Implements multi-agent training.
+visualize.py → Generates plots for analysis.
+
+
+✅ Next Steps
+
+Run train_agent.py to train a single agent.
+Run multi_agent.py to test multi-agent learning.
+Use visualize.py to analyze results.
