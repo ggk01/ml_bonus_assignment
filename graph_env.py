@@ -68,21 +68,22 @@ class GraphColoringEnv:
 
 
     def expand_graph(self):
-        """Expands the current graph by adding a new node and random connections."""
+        """Expands the graph by adding a new node and ensuring it connects to at least one existing node."""
         if len(self.graph.nodes) >= 20:  # Prevent infinite growth
             return  
 
-        new_node = len(self.graph.nodes)  # Add a new node with a unique ID
+        new_node = len(self.graph.nodes)  # Assign a unique ID to the new node
         self.graph.add_node(new_node)
         self.node_colors[new_node] = None  # New node starts uncolored
 
-        # Randomly connect the new node to existing nodes (max 50% of current nodes)
-        existing_nodes = list(self.graph.nodes)
-        num_connections = min(len(existing_nodes) // 2, random.randint(1, 3))  # Limit new connections
+        # Ensure at least one valid connection
+        existing_nodes = list(self.graph.nodes - {new_node})  # Exclude the new node
+        if existing_nodes:
+            num_connections = min(len(existing_nodes) // 2, random.randint(1, 3))  # Limit new connections
+            connections = random.sample(existing_nodes, num_connections or 1)  # Ensure at least 1 connection
 
-        connections = random.sample(existing_nodes, num_connections)
-        for node in connections:
-            self.graph.add_edge(new_node, node)
+            for node in connections:
+                self.graph.add_edge(new_node, node)
 
         self.fixed_edges = list(self.graph.edges)  # Store edges for reference
 
@@ -90,7 +91,6 @@ class GraphColoringEnv:
             self.render(step=self.steps, message=f"Graph Expanded: Added Node {new_node}")
 
         return self.get_state()
-
 
     def render(self, step, message=""): 
         """Visualizes the graph step by step, ensuring all nodes are shown before moving on if enabled."""
