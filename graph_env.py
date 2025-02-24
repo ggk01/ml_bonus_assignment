@@ -66,20 +66,31 @@ class GraphColoringEnv:
         self.steps += 1
         return self.get_state(), reward
 
+
     def expand_graph(self):
-        """Directly replaces the current graph with a new expanded one without intermediate updates."""
-        if len(self.graph.nodes) >= 20:  # ✅ Prevent infinite graph growth
+        """Expands the current graph by adding a new node and random connections."""
+        if len(self.graph.nodes) >= 20:  # Prevent infinite growth
             return  
-        
-        new_graph = self.generate_fixed_graph(len(self.graph.nodes) + 1)
-        self.graph = new_graph
-        self.node_colors = {node: None for node in self.graph.nodes}  # ✅ Reset colors for new graph
-        self.fixed_edges = list(self.graph.edges)  # ✅ Store fixed edges for expansion
-        
+
+        new_node = len(self.graph.nodes)  # Add a new node with a unique ID
+        self.graph.add_node(new_node)
+        self.node_colors[new_node] = None  # New node starts uncolored
+
+        # Randomly connect the new node to existing nodes (max 50% of current nodes)
+        existing_nodes = list(self.graph.nodes)
+        num_connections = min(len(existing_nodes) // 2, random.randint(1, 3))  # Limit new connections
+
+        connections = random.sample(existing_nodes, num_connections)
+        for node in connections:
+            self.graph.add_edge(new_node, node)
+
+        self.fixed_edges = list(self.graph.edges)  # Store edges for reference
+
         if self.show_graph:
-            self.render(step=self.steps, message="Graph Expanded (New Connected Graph Generated)")
-        time.sleep(0.5)
+            self.render(step=self.steps, message=f"Graph Expanded: Added Node {new_node}")
+
         return self.get_state()
+
 
     def render(self, step, message=""): 
         """Visualizes the graph step by step, ensuring all nodes are shown before moving on if enabled."""
