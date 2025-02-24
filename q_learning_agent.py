@@ -21,19 +21,19 @@ class QLearningAgent:
         current_q = self.get_q_value(state, action)
         new_q = (1 - self.alpha) * current_q + self.alpha * (reward + self.gamma * max_next_q)
 
-        # ✅ Prevent overly negative Q-values
+        # Prevent overly negative Q-values
         self.q_table[(state, action)] = max(new_q, -5.0)
 
-        # ✅ Print only when a good move is found
+        #  Print only when a good move is found
         if reward > 0:
-            print(f"✅ Good move: Updated Q-value for (State={state}, Action={action}): {self.q_table[(state, action)]}")
+            print(f" Good move: Updated Q-value for (State={state}, Action={action}): {self.q_table[(state, action)]}")
 
     def select_action(self, state):
         """Selects an action using the ε-greedy policy, avoiding highly negative Q-values."""
         if random.random() < self.epsilon:
             return random.randint(0, self.num_colors - 1)  # Explore
         else:
-            # ✅ Ensure we do not select a very bad action
+            #  Ensure we do not select a very bad action
             valid_actions = [a for a in range(self.num_colors) if self.get_q_value(state, a) > -5]
             if valid_actions:
                 return max(valid_actions, key=lambda a: self.get_q_value(state, a))  # Exploit best valid action

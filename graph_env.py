@@ -12,7 +12,7 @@ class GraphColoringEnv:
         self.reward_wrong = -1
         self.steps = 0
         self.show_graph = show_graph
-        self.fixed_edges = list(self.graph.edges)  # ✅ Store fixed edges to prevent changes
+        self.fixed_edges = list(self.graph.edges)  #  Store fixed edges to prevent changes
 
     def generate_fixed_graph(self, num_nodes):
         """Generates a fixed connected graph that does not change during an episode."""
@@ -23,10 +23,10 @@ class GraphColoringEnv:
 
     def reset(self):
         """Resets the environment for a new episode while preserving the initial graph structure."""
-        self.node_colors = {node: None for node in self.graph.nodes}  # ✅ Reset only colors
+        self.node_colors = {node: None for node in self.graph.nodes}  #  Reset only colors
         self.steps = 0
         self.graph.clear_edges()
-        self.graph.add_edges_from(self.fixed_edges)  # ✅ Restore original edges
+        self.graph.add_edges_from(self.fixed_edges)  #  Restore original edges
         
         if self.show_graph:
             self.render(step=0, message="Initial Graph")
@@ -39,28 +39,28 @@ class GraphColoringEnv:
     def is_valid_color(self, node, color):
         """Checks if a color assignment is valid based on graph constraints."""
         if self.node_colors[node] is not None:
-            return False  # ✅ Prevent re-coloring already colored nodes
+            return False  #  Prevent re-coloring already colored nodes
         
         neighbor_colors = {self.node_colors[n] for n in self.graph.neighbors(node) if self.node_colors[n] is not None}
-        return color not in neighbor_colors  # ✅ Ensure no adjacent nodes have the same color
+        return color not in neighbor_colors  #  Ensure no adjacent nodes have the same color
 
     def step(self, node, color):
         """Executes an action (coloring a node), renders the graph if enabled, and returns the new state."""
         if self.node_colors[node] is not None:
             if self.show_graph:
-                self.render(step=self.steps, message=f"❌ Bad Move: Node {node} Already Colored")
+                self.render(step=self.steps, message=f" Bad Move: Node {node} Already Colored")
             return self.get_state(), self.reward_wrong  # Node already colored
         
         if self.is_valid_color(node, color):
             self.node_colors[node] = color
             reward = self.reward_correct
             if self.show_graph:
-                self.render(step=self.steps, message=f"✅ Good Move: Node {node} -> Color {color}")
-            time.sleep(0.5)  # ✅ Pause to show the coloring step
+                self.render(step=self.steps, message=f" Good Move: Node {node} -> Color {color}")
+            time.sleep(0.5)  #  Pause to show the coloring step
         else:
             reward = self.reward_wrong
             if self.show_graph:
-                self.render(step=self.steps, message=f"❌ Bad Move: Node {node} -> Color {color} (Invalid)")
+                self.render(step=self.steps, message=f" Bad Move: Node {node} -> Color {color} (Invalid)")
             time.sleep(0.5)
         
         self.steps += 1
@@ -97,7 +97,7 @@ class GraphColoringEnv:
         if not self.show_graph:
             return
         
-        color_list = ["red", "blue", "green", "yellow", "purple", "orange"]  # ✅ Define color mappings
+        color_list = ["red", "blue", "green", "yellow", "purple", "orange"]  # Define color mappings
         
         color_map = [
             color_list[self.node_colors[node]] if self.node_colors[node] is not None else "gray"
@@ -108,4 +108,4 @@ class GraphColoringEnv:
         nx.draw(self.graph, with_labels=True, node_color=color_map, edge_color='black', linewidths=1, edgecolors='black', cmap=plt.get_cmap("Set1"))
         plt.title(f"Step {step}: {message}")
         plt.show()
-        time.sleep(0.5)  # ✅ Pause after each render to visualize steps clearly
+        time.sleep(0.5)  #  Pause after each render to visualize steps clearly

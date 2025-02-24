@@ -12,7 +12,7 @@ def train_agent(episodes=10, show_graph=True):
     energy_data = {}  # Stores energy values per node per episode
     single_agent_rewards = []  # Stores cumulative rewards per episode
     
-    for episode in range(1, episodes + 1):  # ✅ Start episodes from 1
+    for episode in range(1, episodes + 1):  #  Start episodes from 1
         print(f"🚀 Starting Episode {episode}")
         state = env.reset()
         done = False
@@ -31,7 +31,7 @@ def train_agent(episodes=10, show_graph=True):
 
             random.shuffle(uncolored_nodes)
             
-            # ✅ Find a valid node and action
+            # Find a valid node and action
             found_valid = False
             for node in uncolored_nodes:
                 valid_colors = [color for color in range(env.max_colors) if env.is_valid_color(node, color)]
@@ -61,7 +61,7 @@ def train_agent(episodes=10, show_graph=True):
             steps += 1
         
         if steps >= max_steps:
-            print(f"❌ Episode {episode}: Step limit reached, marking as failed.")
+            print(f" Episode {episode}: Step limit reached, marking as failed.")
             failed_episodes += 1
         
         single_agent_rewards.append(episode_reward)
@@ -72,8 +72,8 @@ def train_agent(episodes=10, show_graph=True):
             print(f"Training Progress: {episode}/{episodes} episodes completed")
     
     print(f"Training Summary: {failed_episodes}/{episodes} episodes failed due to constraints.")
-    
-    # ✅ Store training data for visualization
+
+    # Store training data for visualization
     training_data = {
         "energy_data": energy_data,
         "single_agent_rewards": single_agent_rewards
